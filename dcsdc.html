@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Responsive Webpage</title>
+    <style>
+        /* Basic Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Base Styles */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        /* Responsive Layout */
+        .sections {
+            display: grid;
+            gap: 20px;
+        }
+
+        @media (min-width: 600px) {
+            .sections {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Quiz Section */
+        .quiz-section, .carousel-section, .api-section {
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .quiz-question {
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .quiz-options button {
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Image Carousel Section */
+        .carousel-images img {
+            width: 100%;
+            height: auto;
+            display: none;
+            border-radius: 8px;
+        }
+
+        .carousel-images img.active {
+            display: block;
+        }
+
+        /* API Section */
+        .api-content {
+            font-size: 1.1em;
+            padding: 10px;
+            background-color: #e0f7fa;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Interactive Responsive Webpage</h1>
+        
+        <div class="sections">
+            <!-- Quiz Section -->
+            <div class="quiz-section">
+                <h2>JavaScript Quiz</h2>
+                <div class="quiz-question">What is the capital of France?</div>
+                <div class="quiz-options">
+                    <button onclick="checkAnswer('London')">London</button>
+                    <button onclick="checkAnswer('Paris')">Paris</button>
+                    <button onclick="checkAnswer('Berlin')">Berlin</button>
+                    <button onclick="checkAnswer('Madrid')">Madrid</button>
+                </div>
+                <div id="quiz-result"></div>
+            </div>
+
+            <!-- Image Carousel Section -->
+            <div class="carousel-section">
+                <h2>Image Carousel</h2>
+                <div class="carousel-images">
+                    <img src="img (22).webp" class="active">
+                    <img src="img (23).jpg">
+                    <img src="img (31).webp">
+                    <img src="img (73).webp">
+                </div>
+                <button onclick="prevImage()">Previous</button>
+                <button onclick="nextImage()">Next</button>
+            </div>
+
+            <!-- API Fetch Section -->
+            <div class="api-section">
+                <h2>Random Joke</h2>
+                <div class="api-content" id="jokeContent">Loading joke...</div>
+                <button onclick="fetchJoke()">Get Another Joke</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript Quiz
+        function checkAnswer(answer) {
+            const result = document.getElementById("quiz-result");
+            if (answer === "Paris") {
+                result.textContent = "Correct!";
+                result.style.color = "green";
+            } else {
+                result.textContent = "Wrong answer!";
+                result.style.color = "red";
+            }
+        }
+
+        // Image Carousel
+        let currentImageIndex = 0;
+        const images = document.querySelectorAll('.carousel-images img');
+
+        function showImage(index) {
+            images.forEach((img, i) => img.classList.toggle("active", i === index));
+        }
+
+        function nextImage() {
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            showImage(currentImageIndex);
+        }
+
+        function prevImage() {
+            currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+            showImage(currentImageIndex);
+        }
+
+        // Fetch data from an API
+        async function fetchJoke() {
+            const jokeContent = document.getElementById("jokeContent");
+            jokeContent.textContent = "Loading...";
+            try {
+                const response = await fetch("https://official-joke-api.appspot.com/random_joke");
+                const joke = await response.json();
+                jokeContent.textContent = `${joke.setup} - ${joke.punchline}`;
+            } catch (error) {
+                jokeContent.textContent = "Failed to load joke.";
+            }
+        }
+
+        // Initial API call to load a joke on page load
+        fetchJoke();
+    </script>
+</body>
+</html>
